@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hallokokoro store</title>
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #faf4fd;
+      --card: #ffffff;
+
+      --pink: #e896c0;
+      --pink-light: #fce8f4;
+      --pink-mid: #f4c0dc;
+      --pink-dark: #c0609a;
+
+      --purple: #b898d8;
+      --purple-light: #efe4fc;
+      --purple-mid: #d8c0f0;
+      --purple-dark: #8048b0;
+
+      --text: #503060;
+      --text-sub: #a07ab8;
+      --text-light: #c8b0d8;
+
+      --border-p: rgba(184,152,216,0.25);
+      --border-pk: rgba(228,160,200,0.25);
+
+      --grad: linear-gradient(135deg, #e896c0, #b898d8);
+      --radius: 18px;
+      --radius-sm: 12px;
+    }
+    body {
+      font-family: 'Josefin Sans', sans-serif;
+      background: linear-gradient(160deg, #fdf0fa 0%, #f4eafc 50%, #fdf0fa 100%);
+      color: var(--text);
+      min-height: 100vh;
+      letter-spacing: 0.3px;
+    }
+
+    .page { display: none; min-height: 100vh; padding: 2rem 1rem 6rem; }
+    .page.active { display: block; }
+    .container { max-width: 460px; margin: 0 auto; }
+
+    /* WINDOW */
+    .window {
+      background: var(--card);
+      border: 1px solid var(--pink-mid);
+      border-radius: var(--radius);
+      box-shadow: 0 6px 28px rgba(180,120,200,0.1);
+      overflow: hidden;
+    }
+    .window-bar {
+      background: linear-gradient(90deg, var(--pink-light) 0%, var(--purple-light) 100%);
+      padding: 9px 14px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .window-dots { display: flex; gap: 6px; }
+    .window-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(180,120,200,0.3); }
+    .window-icons { font-size: 13px; color: var(--text-light); display: flex; gap: 10px; }
+    .window-body { padding: 1.5rem; }
+
+    /* PROFILE */
+    .profile-section { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1.5rem; }
+    .profile-img-wrap {
+      flex-shrink: 0; width: 105px; height: 105px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--purple-mid);
+      overflow: hidden; background: var(--purple-light);
+    }
+    .profile-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .profile-img-placeholder {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px; color: var(--purple);
+    }
+    .profile-info { flex: 1; padding-top: 6px; }
+    .profile-name {
+      font-size: 22px; font-weight: 600; color: var(--purple-dark);
+      font-style: italic; margin-bottom: 8px; letter-spacing: 1px;
+    }
+    .profile-desc { font-size: 12px; color: var(--text-sub); line-height: 1.8; font-weight: 300; }
+
+    /* HOME BUTTONS — alternating pink & purple */
+    .btn-list { display: flex; flex-direction: column; gap: 9px; }
+    .btn-item {
+      display: flex; align-items: center; justify-content: space-between;
+      border: 1px solid transparent;
+      border-radius: 50px;
+      padding: 11px 20px;
+      cursor: pointer; transition: all 0.2s;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 13px; font-weight: 400; color: var(--text);
+      text-decoration: none; letter-spacing: 1px;
+    }
+    .btn-item.pk { background: var(--pink-light); }
+    .btn-item.pv { background: var(--purple-light); }
+    .btn-item.pk:hover { border-color: var(--pink); background: #fad4ec; transform: translateY(-1px); }
+    .btn-item.pv:hover { border-color: var(--purple); background: #e4d4f8; transform: translateY(-1px); }
+    .btn-item .btn-arrow { font-size: 12px; color: var(--text-light); }
+
+    /* BACK */
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--purple-light); border: none;
+      border-radius: 50px; padding: 8px 18px;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 12px; font-weight: 400; letter-spacing: 1px;
+      color: var(--text-sub); cursor: pointer; margin-bottom: 1rem;
+      transition: background 0.15s;
+    }
+    .back-btn:hover { background: var(--purple-mid); }
+
+    /* PAGE TITLE */
+    .page-title {
+      font-size: 17px; font-weight: 600; color: var(--purple-dark);
+      margin-bottom: 1.25rem; text-align: center;
+      letter-spacing: 2px;
+    }
+
+    /* PRICELIST */
+    .pricelist-item {
+      border-radius: var(--radius-sm);
+      padding: 10px 14px; text-align: center; margin-bottom: 6px;
+      border: 1px solid transparent; transition: border-color 0.15s;
+    }
+    .pricelist-item:nth-child(odd) { background: var(--pink-light); }
+    .pricelist-item:nth-child(even) { background: var(--purple-light); }
+    .pricelist-item:nth-child(odd):hover { border-color: var(--pink-mid); }
+    .pricelist-item:nth-child(even):hover { border-color: var(--purple-mid); }
+    .pricelist-item .item-judul {
+      font-size: 12px; font-weight: 600; color: var(--purple-dark);
+      margin-bottom: 3px; letter-spacing: 1.5px; text-transform: uppercase;
+    }
+    .pricelist-item .item-isi {
+      font-size: 12px; color: var(--text-sub); line-height: 1.7; font-weight: 300;
+    }
+
+    /* 2 COL */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .col-card {
+      background: var(--card); border-radius: var(--radius);
+      padding: 1rem; box-shadow: 0 3px 10px rgba(180,120,200,0.08);
+    }
+    .col-card:nth-child(odd) { border: 1px solid var(--pink-mid); }
+    .col-card:nth-child(even) { border: 1px solid var(--purple-mid); }
+    .col-title {
+      font-size: 11px; font-weight: 600;
+      text-align: center; margin-bottom: 0.75rem;
+      padding-bottom: 8px; letter-spacing: 2px;
+    }
+    .col-card:nth-child(odd) .col-title { color: var(--pink-dark); border-bottom: 1px solid var(--pink-mid); }
+    .col-card:nth-child(even) .col-title { color: var(--purple-dark); border-bottom: 1px solid var(--purple-mid); }
+
+    /* APP BTNS — alternating */
+    .app-btn-list { display: flex; flex-direction: column; gap: 8px; }
+    .app-btn {
+      border: 1px solid transparent;
+      border-radius: 50px; padding: 0 20px;
+      height: 44px; line-height: 44px;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 13px; font-weight: 400; color: var(--text);
+      cursor: pointer; text-align: center; transition: all 0.2s;
+      letter-spacing: 1px; white-space: nowrap; overflow: hidden;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .app-btn span.sym { font-size: 13px; line-height: 1; display: inline-flex; align-items: center; }
+    .app-btn:nth-child(odd) { background: var(--pink-light); }
+    .app-btn:nth-child(even) { background: var(--purple-light); }
+    .app-btn:nth-child(odd):hover { border-color: var(--pink); background: #fad4ec; transform: translateY(-1px); }
+    .app-btn:nth-child(even):hover { border-color: var(--purple); background: #e4d4f8; transform: translateY(-1px); }
+
+    /* ADMIN */
+    .admin-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      background: linear-gradient(90deg, var(--pink-light), var(--purple-light));
+      border-radius: var(--radius-sm);
+      padding: 8px 14px; margin-bottom: 0.75rem; margin-top: 0.75rem;
+    }
+    .admin-status { font-size: 11px; color: var(--text-sub); letter-spacing: 0.5px; font-weight: 300; }
+    .admin-status.unlocked { color: #5a8a40; }
+    .btn-admin-toggle {
+      background: white; border: 1px solid var(--purple-mid);
+      border-radius: 50px; font-size: 10px; color: var(--text-sub);
+      padding: 4px 12px; cursor: pointer;
+      font-family: 'Josefin Sans', sans-serif; letter-spacing: 0.5px;
+    }
+    .btn-admin-toggle.active { border-color: #5a8a40; color: #5a8a40; }
+    .pw-row { display: flex; gap: 8px; margin-bottom: 0.5rem; }
+    .pw-row input {
+      flex: 1; background: white; border: 1px solid var(--purple-mid);
+      border-radius: var(--radius-sm); color: var(--text);
+      font-size: 12px; height: 34px; padding: 0 12px; outline: none;
+      font-family: 'Josefin Sans', sans-serif; letter-spacing: 0.5px;
+    }
+    .pw-row input:focus { border-color: var(--purple); }
+    .pw-btn {
+      background: var(--grad); border: none; border-radius: var(--radius-sm);
+      color: white; font-size: 11px; padding: 0 14px; cursor: pointer;
+      font-family: 'Josefin Sans', sans-serif; letter-spacing: 0.5px;
+    }
+    .pw-error { color: #c05050; font-size: 11px; margin-bottom: 0.5rem; }
+
+    /* EDIT */
+    .edit-item {
+      background: var(--purple-light); border: 1px solid var(--purple-mid);
+      border-radius: var(--radius-sm); padding: 10px; margin-bottom: 8px;
+    }
+    .edit-item input, .edit-item textarea {
+      width: 100%; background: white; border: 1px solid var(--pink-mid);
+      border-radius: 8px; color: var(--text); font-size: 12px;
+      padding: 7px 10px; outline: none; margin-bottom: 6px;
+      font-family: 'Josefin Sans', sans-serif; text-align: center; letter-spacing: 0.5px;
+    }
+    .edit-item textarea { resize: vertical; min-height: 55px; }
+    .edit-item-actions { display: flex; justify-content: flex-end; }
+    .btn-del-item {
+      background: none; border: 1px solid rgba(192,80,80,0.3);
+      border-radius: 6px; color: #c05050; font-size: 11px;
+      padding: 3px 10px; cursor: pointer; font-family: 'Josefin Sans', sans-serif;
+    }
+    .btn-del-item:hover { background: #fce8e8; }
+    .btn-add-item {
+      width: 100%; background: white; border: 1.5px dashed var(--purple);
+      border-radius: var(--radius-sm); color: var(--purple-dark);
+      font-size: 12px; padding: 9px; cursor: pointer; margin-top: 4px;
+      font-family: 'Josefin Sans', sans-serif; letter-spacing: 0.5px;
+    }
+    .btn-add-item:hover { background: var(--purple-light); }
+    .btn-save {
+      width: 100%; background: var(--grad); border: none;
+      border-radius: var(--radius-sm); color: white;
+      font-size: 12px; font-weight: 600; padding: 10px;
+      cursor: pointer; margin-top: 8px;
+      font-family: 'Josefin Sans', sans-serif; letter-spacing: 1px;
+    }
+    .btn-save:hover { opacity: 0.88; }
+    .save-msg { font-size: 11px; color: #5a8a40; text-align: center; margin-top: 6px; letter-spacing: 0.5px; }
+
+    .loading-msg { text-align: center; padding: 1.5rem; color: var(--text-light); font-size: 12px; letter-spacing: 0.5px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spin { display: inline-block; animation: spin 1s linear infinite; }
+
+    /* FOOTER */
+    .footer-btns { display: flex; gap: 10px; justify-content: center; padding: 1.5rem 0 0.5rem; }
+    .footer-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 9px 22px; border-radius: 50px;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 12px; font-weight: 600; letter-spacing: 1px;
+      text-decoration: none; transition: opacity 0.15s;
+    }
+    .footer-btn:hover { opacity: 0.85; }
+    .footer-btn.wa { background: #25d366; color: white; }
+    .footer-btn.tg { background: #229ed9; color: white; }
+    .footer-credit { text-align: center; font-size: 10px; color: var(--text-light); padding-bottom: 1rem; letter-spacing: 1px; }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="container">
+    <div class="window">
+      <div class="window-bar">
+        <div class="window-dots"><div class="window-dot"></div><div class="window-dot"></div><div class="window-dot"></div></div>
+        <div class="window-icons">✉ ♡ ✕</div>
+      </div>
+      <div class="window-body">
+        <div class="profile-section">
+          <div class="profile-img-wrap">
+            <img src="avatar.png" alt="candy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+            <div class="profile-img-placeholder" style="display:none">✦</div>
+          </div>
+          <div class="profile-info">
+            <div class="profile-name">candy</div>
+            <div class="profile-desc">Welcome to hallokokoro! come on, I'll take you on a tour of our store!</div>
+          </div>
+        </div>
+        <div class="btn-list">
+          <a class="btn-item pk" href="https://candyfromkokoro-create.github.io/reseller-giveaway/" target="_blank">
+            <span>give away</span><span class="btn-arrow">→</span>
+          </a>
+          <div class="btn-item pv" onclick="goTo('page-app')">
+            <span>price list app</span><span class="btn-arrow">→</span>
+          </div>
+          <div class="btn-item pk" onclick="goTo('page-topup')">
+            <span>price list topup</span><span class="btn-arrow">→</span>
+          </div>
+          <div class="btn-item pv" onclick="goTo('page-sosmed')">
+            <span>price list sosmed needs</span><span class="btn-arrow">→</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-btns">
+      <a class="footer-btn wa" href="https://wa.me/6285190818032" target="_blank">whatsapp</a>
+      <a class="footer-btn tg" href="https://t.me/hallokokoro" target="_blank">telegram</a>
+    </div>
+    <div class="footer-credit">@hallokokoro on telegram</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="page" id="page-app">
+  <div class="container">
+    <button class="back-btn" onclick="goTo('page-home')">← kembali</button>
+    <div class="page-title">price list app</div>
+    <div class="window">
+      <div class="window-body">
+        <div class="app-btn-list">
+          <div class="app-btn" onclick="goTo('page-app-streaming')"><span class="sym">📽</span> streaming</div>
+          <div class="app-btn" onclick="goTo('page-app-editing')"><span class="sym" style="font-size:12px">𓂃🖌</span> editing</div>
+          <div class="app-btn" onclick="goTo('page-app-education')"><span class="sym">🕮</span> education</div>
+          <div class="app-btn" onclick="goTo('page-app-music')"><span class="sym" style="font-size:12px">♪ 𝄞</span> music</div>
+          <div class="app-btn" onclick="goTo('page-app-other')"><span class="sym" style="font-size:12px">꩜</span> lain-lain</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-btns">
+      <a class="footer-btn wa" href="https://wa.me/6285190818032" target="_blank">whatsapp</a>
+      <a class="footer-btn tg" href="https://t.me/hallokokoro" target="_blank">telegram</a>
+    </div>
+  </div>
+</div>
+
+<!-- APP SUB PAGES -->
+<div class="page" id="page-app-streaming">
+  <div class="container">
+    <button class="back-btn" onclick="goTo('page-app')">← kembali</button>
+    <div class="page-title">📽 streaming</div>
+    <div class="window"><div class="window-body" id="content-app_streaming"><div class="loading-msg"><span class="spin">↻</span> memuat...</div></div></div>
+    <div id="adminsec-app_streaming"></div>
+    <div class="footer-btns"><a class="footer-btn wa" href="https://wa.me/6285190818032" target="_blank">whatsapp</a><a class="footer-btn tg" href="https://t.me/hallokokoro" target="_blank">telegram</a></div>
+  </div>
+</div>
+<div class="page" id="page-app-editing">
+  <div class="container">
+    <button class="back-btn" onclick="goTo('page-app')">← kembali</button>
+    <div class="page-title">𓂃🖌 editing</div>
+    <div class="window"><div class="window-body" id="content-app_editing"><div class="loading-msg"><span class="spin">↻</span> memuat...</div></div></div>
+    <div id="adminsec-app_editing"></div>
+    <div class="footer-btns"><a class="footer-btn wa" href="https://wa.me/6285190818032" target="_blank">whatsapp</a><a class="footer-btn tg" href="https://t.me/hallokokoro" target="_blank">telegram</a></div>
+  </div>
+</div>
+<div class="page" id="page-app-education">
+  <div class="container">
+    <button class="back-btn" onclick="goTo('page-app')">← kembali</button>
+    <div class="page-title">🕮 education</div>
+    <div class="window"><div class="window-body" id="content-app_education"><div class="loading-msg"><span class="spin">↻</span> memuat...</div></div></div>
+    <div id="adminsec-app_education"></div>
+    <div class="footer-btns"><a class="footer-btn wa" href="https://wa.me/6285190818032" target="_blank">whatsapp</a><a class="footer-btn tg" href="https://t.me/hallokokoro" target="_blank">telegram</a></div>
+  </div>
+</div>
+<div class="page" id="page-app-music">
+  <div class="container">
+    <button class="back-btn" onclick="goTo('page-app')">← kembali</button>
+    <div class="page-title">♪ 𝄞 music</div>
+    <div class="window"><div class="window-body" id="content-app_music"><div class="loading-msg"><span class="spin">↻</span> memuat...</div></div></div>
+    <div id="adminsec-app_music"></div>
+    <div class="footer-btns"><a class="footer-btn wa" href="https://wa.me/6285190818032" target="_blank">whatsapp</a><a class="footer-btn tg" href="https://t.me/hallokokoro" target="_blank">telegram</a></div>
+  </div>
+</div>
+<div class="page" id="page-app-other">
+  <div class="container">
+    <button class="back-btn" onclick="goTo('page-app')">← kembali</button>
+    <div class="page-title">꩜ lain-lain</div>
+    <div class="window"><div class="window-body" id="content-app_other"><div class="loading-msg"><span class="spin">↻</span> memuat...</div></div></div>
+    <div id="adminsec-app_other"></div>
+    <div class="footer-btns"><a class="footer-btn wa" href="https://wa.me/6285190818032" target="_blank">whatsapp</a><a class="footer-btn tg" href="https://t.me/hallokokoro" target="_blank">telegram</a></div>
+  </div>
+</div>
+
+<!-- TOPUP -->
+<div class="page" id="page-topup">
+  <div class="container">
+    <button class="back-btn" onclick="goTo('page-home')">← kembali</button>
+    <div class="page-title">price list topup</div>
+    <div class="window">
+      <div class="window-body">
+        <div class="two-col">
+          <div class="col-card"><div class="col-title">MLBB</div><div id="content-topup_mlbb"><div class="loading-msg"><span class="spin">↻</span></div></div></div>
+          <div class="col-card"><div class="col-title">ROBUX</div><div id="content-topup_robux"><div class="loading-msg"><span class="spin">↻</span></div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="admin-bar">
+      <div class="admin-status" id="adminstatus-topup">mode publik</div>
+      <button class="btn-admin-toggle" id="admintoggle-topup" onclick="toggleAdminGroup('topup',['topup_mlbb','topup_robux'])">masuk admin</button>
+    </div>
+    <div id="pwsec-topup" class="hidden">
+      <div class="pw-row"><input type="password" id="pwinput-topup" placeholder="password admin..." /><button class="pw-btn" onclick="submitPwGroup('topup',['topup_mlbb','topup_robux'])">masuk</button></div>
+      <div class="pw-error hidden" id="pwerr-topup">password salah.</div>
+    </div>
+    <div id="admin-topup" class="hidden" style="margin-top:0.75rem;">
+      <div class="two-col">
+        <div><div style="font-size:10px;font-weight:600;color:var(--pink-dark);text-align:center;margin-bottom:8px;letter-spacing:1.5px;">EDIT MLBB</div><div id="editlist-topup_mlbb"></div><button class="btn-add-item" onclick="addEditItem('topup_mlbb')">+ tambah</button><button class="btn-save" onclick="saveSheet('topup_mlbb')">simpan mlbb</button></div>
+        <div><div style="font-size:10px;font-weight:600;color:var(--purple-dark);text-align:center;margin-bottom:8px;letter-spacing:1.5px;">EDIT ROBUX</div><div id="editlist-topup_robux"></div><button class="btn-add-item" onclick="addEditItem('topup_robux')">+ tambah</button><button class="btn-save" onclick="saveSheet('topup_robux')">simpan robux</button></div>
+      </div>
+      <div class="save-msg hidden" id="savemsg-topup"></div>
+    </div>
+    <div class="footer-btns"><a class="footer-btn wa" href="https://wa.me/6285190818032" target="_blank">whatsapp</a><a class="footer-btn tg" href="https://t.me/hallokokoro" target="_blank">telegram</a></div>
+  </div>
+</div>
+
+<!-- SOSMED -->
+<div class="page" id="page-sosmed">
+  <div class="container">
+    <button class="back-btn" onclick="goTo('page-home')">← kembali</button>
+    <div class="page-title">price list sosmed needs</div>
+    <div class="window">
+      <div class="window-body">
+        <div class="two-col">
+          <div class="col-card"><div class="col-title">INSTAGRAM</div><div id="content-sosmed_instagram"><div class="loading-msg"><span class="spin">↻</span></div></div></div>
+          <div class="col-card"><div class="col-title">TIKTOK</div><div id="content-sosmed_tiktok"><div class="loading-msg"><span class="spin">↻</span></div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="admin-bar">
+      <div class="admin-status" id="adminstatus-sosmed">mode publik</div>
+      <button class="btn-admin-toggle" id="admintoggle-sosmed" onclick="toggleAdminGroup('sosmed',['sosmed_instagram','sosmed_tiktok'])">masuk admin</button>
+    </div>
+    <div id="pwsec-sosmed" class="hidden">
+      <div class="pw-row"><input type="password" id="pwinput-sosmed" placeholder="password admin..." /><button class="pw-btn" onclick="submitPwGroup('sosmed',['sosmed_instagram','sosmed_tiktok'])">masuk</button></div>
+      <div class="pw-error hidden" id="pwerr-sosmed">password salah.</div>
+    </div>
+    <div id="admin-sosmed" class="hidden" style="margin-top:0.75rem;">
+      <div class="two-col">
+        <div><div style="font-size:10px;font-weight:600;color:var(--pink-dark);text-align:center;margin-bottom:8px;letter-spacing:1.5px;">EDIT INSTAGRAM</div><div id="editlist-sosmed_instagram"></div><button class="btn-add-item" onclick="addEditItem('sosmed_instagram')">+ tambah</button><button class="btn-save" onclick="saveSheet('sosmed_instagram')">simpan instagram</button></div>
+        <div><div style="font-size:10px;font-weight:600;color:var(--purple-dark);text-align:center;margin-bottom:8px;letter-spacing:1.5px;">EDIT TIKTOK</div><div id="editlist-sosmed_tiktok"></div><button class="btn-add-item" onclick="addEditItem('sosmed_tiktok')">+ tambah</button><button class="btn-save" onclick="saveSheet('sosmed_tiktok')">simpan tiktok</button></div>
+      </div>
+      <div class="save-msg hidden" id="savemsg-sosmed"></div>
+    </div>
+    <div class="footer-btns"><a class="footer-btn wa" href="https://wa.me/6285190818032" target="_blank">whatsapp</a><a class="footer-btn tg" href="https://t.me/hallokokoro" target="_blank">telegram</a></div>
+  </div>
+</div>
+
+<script>
+const API='https://script.google.com/macros/s/AKfycbx3ZDa0PnhCsUiI89m0PKZ6PsYeRsxtoKRwZlWRJi2i8-P5fWtth2HFMFRU50vhxQWS2w/exec';
+const PW='candylucu';
+const SINGLE=['app_streaming','app_editing','app_education','app_music','app_other'];
+let adminState={};
+let dataCache={};
+
+function g(id){return document.getElementById(id);}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function escAttr(s){return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');}
+
+function goTo(pageId){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  g(pageId).classList.add('active');
+  window.scrollTo(0,0);
+  const loads={'page-app-streaming':['app_streaming'],'page-app-editing':['app_editing'],'page-app-education':['app_education'],'page-app-music':['app_music'],'page-app-other':['app_other'],'page-topup':['topup_mlbb','topup_robux'],'page-sosmed':['sosmed_instagram','sosmed_tiktok']};
+  if(loads[pageId]) loads[pageId].forEach(s=>{if(!dataCache[s]) fetchSheet(s);});
+}
+
+async function apiCall(params){
+  const url=new URL(API);
+  Object.entries(params).forEach(([k,v])=>url.searchParams.set(k,v));
+  return (await fetch(url.toString())).json();
+}
+
+async function fetchSheet(sheet){
+  try{
+    const res=await apiCall({action:'get',sheet});
+    dataCache[sheet]=res.items||[];
+    renderSheet(sheet);
+  }catch(e){
+    const el=g('content-'+sheet);
+    if(el) el.innerHTML='<div class="loading-msg" style="color:#c05050">gagal memuat.</div>';
+  }
+}
+
+function renderSheet(sheet){
+  const items=dataCache[sheet]||[];
+  const el=g('content-'+sheet);
+  if(!el) return;
+  if(!items.length){el.innerHTML='<div class="loading-msg">belum ada data.</div>';return;}
+  el.innerHTML=items.map(item=>`<div class="pricelist-item"><div class="item-judul">${esc(item.judul)}</div><div class="item-isi">${esc(item.isi)}</div></div>`).join('');
+}
+
+function initSingleAdmins(){
+  SINGLE.forEach(sheet=>{
+    const sec=g('adminsec-'+sheet);
+    if(!sec) return;
+    sec.innerHTML=`
+      <div class="admin-bar">
+        <div class="admin-status" id="adminstatus-${sheet}">mode publik</div>
+        <button class="btn-admin-toggle" id="admintoggle-${sheet}" onclick="toggleAdmin('${sheet}')">masuk admin</button>
+      </div>
+      <div id="pwsec-${sheet}" class="hidden">
+        <div class="pw-row"><input type="password" id="pwinput-${sheet}" placeholder="password admin..." /><button class="pw-btn" onclick="submitPw('${sheet}')">masuk</button></div>
+        <div class="pw-error hidden" id="pwerr-${sheet}">password salah.</div>
+      </div>
+      <div id="adminedit-${sheet}" class="hidden" style="margin-top:0.5rem;">
+        <div id="editlist-${sheet}"></div>
+        <button class="btn-add-item" onclick="addEditItem('${sheet}')">+ tambah item</button>
+        <button class="btn-save" onclick="saveSheet('${sheet}')">simpan</button>
+        <div class="save-msg hidden" id="savemsg-${sheet}"></div>
+      </div>`;
+  });
+}
+
+function toggleAdmin(sheet){
+  if(adminState[sheet]){adminState[sheet]=false;g('adminstatus-'+sheet).textContent='mode publik';g('adminstatus-'+sheet).className='admin-status';g('admintoggle-'+sheet).textContent='masuk admin';g('admintoggle-'+sheet).classList.remove('active');g('adminedit-'+sheet).classList.add('hidden');g('pwsec-'+sheet).classList.add('hidden');return;}
+  const pw=g('pwsec-'+sheet);const hidden=pw.classList.contains('hidden');pw.classList.toggle('hidden',!hidden);if(hidden)g('pwinput-'+sheet).focus();
+}
+function submitPw(sheet){
+  if(g('pwinput-'+sheet).value===PW){adminState[sheet]=true;g('pwsec-'+sheet).classList.add('hidden');g('adminstatus-'+sheet).textContent='mode admin aktif';g('adminstatus-'+sheet).className='admin-status unlocked';g('admintoggle-'+sheet).textContent='keluar admin';g('admintoggle-'+sheet).classList.add('active');g('adminedit-'+sheet).classList.remove('hidden');buildEditList(sheet);g('pwinput-'+sheet).value='';}
+  else{g('pwerr-'+sheet).classList.remove('hidden');g('pwinput-'+sheet).value='';setTimeout(()=>g('pwerr-'+sheet).classList.add('hidden'),2000);}
+}
+function toggleAdminGroup(group,sheets){
+  if(adminState[group]){adminState[group]=false;g('adminstatus-'+group).textContent='mode publik';g('adminstatus-'+group).className='admin-status';g('admintoggle-'+group).textContent='masuk admin';g('admintoggle-'+group).classList.remove('active');g('admin-'+group).classList.add('hidden');g('pwsec-'+group).classList.add('hidden');return;}
+  const pw=g('pwsec-'+group);const hidden=pw.classList.contains('hidden');pw.classList.toggle('hidden',!hidden);if(hidden)g('pwinput-'+group).focus();
+}
+function submitPwGroup(group,sheets){
+  if(g('pwinput-'+group).value===PW){adminState[group]=true;g('pwsec-'+group).classList.add('hidden');g('adminstatus-'+group).textContent='mode admin aktif';g('adminstatus-'+group).className='admin-status unlocked';g('admintoggle-'+group).textContent='keluar admin';g('admintoggle-'+group).classList.add('active');g('admin-'+group).classList.remove('hidden');sheets.forEach(s=>buildEditList(s));g('pwinput-'+group).value='';}
+  else{g('pwerr-'+group).classList.remove('hidden');g('pwinput-'+group).value='';setTimeout(()=>g('pwerr-'+group).classList.add('hidden'),2000);}
+}
+
+function buildEditList(sheet){
+  const el=g('editlist-'+sheet);if(!el)return;
+  const items=dataCache[sheet]||[];
+  el.innerHTML=items.map((item,i)=>`<div class="edit-item"><input type="text" placeholder="judul" value="${escAttr(item.judul)}" id="judul-${sheet}-${i}" /><textarea placeholder="isi / harga" id="isi-${sheet}-${i}">${esc(item.isi)}</textarea><div class="edit-item-actions"><button class="btn-del-item" onclick="delEditItem('${sheet}',${i})">× hapus</button></div></div>`).join('');
+}
+function addEditItem(sheet){if(!dataCache[sheet])dataCache[sheet]=[];dataCache[sheet].push({judul:'',isi:''});buildEditList(sheet);}
+function delEditItem(sheet,idx){dataCache[sheet].splice(idx,1);buildEditList(sheet);}
+function collectItems(sheet){return(dataCache[sheet]||[]).map((_,i)=>({judul:(g('judul-'+sheet+'-'+i)?.value||'').trim(),isi:(g('isi-'+sheet+'-'+i)?.value||'').trim()})).filter(item=>item.judul||item.isi);}
+
+async function saveSheet(sheet){
+  const items=collectItems(sheet);dataCache[sheet]=items;
+  try{
+    await apiCall({action:'save',sheet,items:JSON.stringify(items)});
+    renderSheet(sheet);buildEditList(sheet);
+    const group=sheet.startsWith('topup')?'topup':sheet.startsWith('sosmed')?'sosmed':sheet;
+    const msgEl=g('savemsg-'+group)||g('savemsg-'+sheet);
+    if(msgEl){msgEl.textContent='tersimpan!';msgEl.classList.remove('hidden');setTimeout(()=>msgEl.classList.add('hidden'),2500);}
+  }catch(e){alert('gagal menyimpan.');}
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Enter'||!document.activeElement||document.activeElement.type!=='password')return;
+  const id=document.activeElement.id.replace('pwinput-','');
+  if(id==='topup')submitPwGroup('topup',['topup_mlbb','topup_robux']);
+  else if(id==='sosmed')submitPwGroup('sosmed',['sosmed_instagram','sosmed_tiktok']);
+  else submitPw(id);
+});
+
+initSingleAdmins();
+</script>
+</body>
+</html>
