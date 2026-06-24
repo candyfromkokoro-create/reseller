@@ -122,7 +122,7 @@
     .app-btn:nth-child(even):hover { border-color: var(--purple); background: #e4d4f8; transform: translateY(-1px); }
 
     /* PRICELIST GRID */
-    .pl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; overflow: visible; }
+    .pl-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 8px; margin-top: 14px; overflow: visible; }
     @media (max-width: 480px) {
       .pl-grid { grid-template-columns: 1fr; gap: 12px; }
     }
